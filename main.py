@@ -41,7 +41,7 @@ def home():
 def readinternaljson():
     return json.dumps(data)
 
-
+# this returns the response as a json format .
 @app.route('/readjson', methods=['GET'])
 def readjsonfile():
      
@@ -49,6 +49,19 @@ def readjsonfile():
     	info = json.loads(f.read())
     return json.dumps(info)
     
+    
+    
+    
+@app.route('/postjson', methods=[ 'POST'])
+def recievejsonpost():
+	data = request.get_json()
+	print (data)
+	# name = data.get('name', '')
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'})
+
+
+
+
     
 @app.route('/writejson', methods=['GET', 'POST'])
 def writejsonfile():
