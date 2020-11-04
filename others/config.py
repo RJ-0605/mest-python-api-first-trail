@@ -1,6 +1,5 @@
 
-export FLASK_ENV=development
-flask run
+
 
 
 from dotenv import load_dotenv
