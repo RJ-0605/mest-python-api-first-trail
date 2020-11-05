@@ -1,41 +1,74 @@
 
 
-from flask import Flask , request
+
+from flask import Flask, Response ,json, request
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-  return 'Server Works!'
-  
+
+# this json can be exported to a json file and imported and read  
+
+data = {}
+data['people'] = []
+data['people'].append({
+    'name': 'Scott',
+    'website': 'stackabuse.com',
+    'from': 'Nebraska'
+})
+data['people'].append({
+    'name': 'Larry',
+    'website': 'google.com',
+    'from': 'Michigan'
+})
+data['people'].append({
+    'name': 'Tim',
+    'website': 'apple.com',
+    'from': 'Alabama'
+})
 
 
-@app.route('/hello')
-def hello():
-  return 'Hello, greetings from different endpoint'
 
-#adding variables
-@app.route('/user/<username>')
-def show_user(username):
-  #returns the username
-  return 'Username: %s' % username
 
-@app.route('/post/<int:post_id>')
-def show_post(post_id):
-  #returns the post, the post_id should be an int
-  return str(post_id)
-  
-@app.route('/greet')
-def say_hello():
-  return 'Hello from Server'
-  
-@app.route('/login', methods=['GET','POST'])
-def login():
-  if request.method == 'POST':
-    #check user details from db
-    login_user()
-  elif request.method == 'GET':
-    #serve login page
-    serve_login_page()
+
+
+
+@app.route('/', methods=['GET'])
+def home():
+    return '''<h1>Distant Reading Archive</h1>
+              <p>A prototype API for distant reading of science fiction novels.</p>'''
+
+
+@app.route('/api/v1/resources/books/all', methods=['GET'])
+def readinternaljson():
+    return json.dumps(data)
+
+# this returns the response as a json format .
+@app.route('/readjson', methods=['GET'])
+def readjsonfile():
+     
+    with open('sample-python.json', 'r') as f:
+    	info = json.loads(f.read())
+    return json.dumps(info)
     
+    
+    
+    
+@app.route('/postjson', methods=[ 'POST'])
+def recievejsonpost():
+	data = request.get_json()
+	print (data)
+	# name = data.get('name', '')
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-  
+
+
+    
+@app.route('/writejson', methods=['GET', 'POST'])
+def writejsonfile():
+     
+    with open('sample-write.json', 'w') as f:
+    	info = json.dumps(f.write(b'{"text": "success"}' )); f.flush()
+    return json.dumps(info)
+
+
+if __name__ == '__main__':
+    app.run(threaded=True, port=5001, debug=True, use_reloader=True)
